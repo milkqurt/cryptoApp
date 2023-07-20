@@ -3,20 +3,22 @@ package com.example.cryptoapp.presentation
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.example.cryptoapp.R
+import com.example.cryptoapp.databinding.ActivityCoinDetailBinding
 import com.squareup.picasso.Picasso
 
 class CoinDetailActivity : AppCompatActivity() {
 
     private lateinit var viewModel: CoinViewModel
 
+    private val binding by lazy {
+        ActivityCoinDetailBinding.inflate(layoutInflater)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_coin_detail)
+        setContentView(binding.root)
         if (!intent.hasExtra(EXTRA_FROM_SYMBOL)) {
             finish()
             return
@@ -28,22 +30,16 @@ class CoinDetailActivity : AppCompatActivity() {
         )[CoinViewModel::class.java]
         fromSymbol?.let {
             viewModel.getDetailInfo(it).observe(this) {
-                val ivLogoCoin: ImageView = findViewById(R.id.ivLogoCoin);
-                val tvFromSym: TextView = findViewById(R.id.tvFromSym);
-                val tvToSym: TextView = findViewById(R.id.tvToSym);
-                val tvPriceValue: TextView = findViewById(R.id.tvPriceValue);
-                val tvMinDayValue: TextView = findViewById(R.id.tvMinDayValue);
-                val tvMaxDayValue: TextView = findViewById(R.id.tvMaxDayValue);
-                val tvLastTraidValue: TextView = findViewById(R.id.tvLastTraidValue);
-                val tvUpdatedValue: TextView = findViewById(R.id.tvUpdatedValue);
-                tvFromSym.text = it.fromSymbol
-                tvToSym.text = it.toSymbol
-                tvPriceValue.text = it.price.toString()
-                tvMinDayValue.text = it.lowDay.toString()
-                tvMaxDayValue.text = it.highDay.toString()
-                tvLastTraidValue.text = it.lastMarket
-                tvUpdatedValue.text = it.lastUpdate
-                Picasso.get().load(it.imageUrl).into(ivLogoCoin)
+                with(binding) {
+                    tvFromSym.text = it.fromSymbol
+                    tvToSym.text = it.toSymbol
+                    tvPriceValue.text = it.price.toString()
+                    tvMinDayValue.text = it.lowDay.toString()
+                    tvMaxDayValue.text = it.highDay.toString()
+                    tvLastTraidValue.text = it.lastMarket
+                    tvUpdatedValue.text = it.lastUpdate
+                    Picasso.get().load(it.imageUrl).into(ivLogoCoin)
+                }
             }
         }
     }

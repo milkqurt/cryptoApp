@@ -5,6 +5,7 @@ import com.example.cryptoapp.data.network.model.CoinInfoJsonContainerDto
 import com.example.cryptoapp.data.network.model.CoinNamesListDto
 import com.example.cryptoapp.data.network.model.CoinPriceInfo
 import com.example.cryptoapp.domain.CoinInfo
+import com.example.cryptoapp.utils.convertTimeStampToTime
 import com.google.gson.Gson
 
 class CoinMapper {
@@ -17,7 +18,7 @@ class CoinMapper {
         highDay = dto.highDay,
         lowDay = dto.lowDay,
         lastMarket = dto.lastMarket,
-        imageUrl = dto.imageUrl
+        imageUrl = BASE_IMAGE_URL + dto.imageUrl
     )
 
     fun mapJsonContainerToListCoinInfo(jsonContainer: CoinInfoJsonContainerDto): List<CoinPriceInfo> {
@@ -46,10 +47,15 @@ class CoinMapper {
         fromSymbol = dbModel.fromSymbol,
         toSymbol = dbModel.toSymbol,
         price = dbModel.price,
-        lastUpdate = dbModel.lastUpdate,
+        lastUpdate = convertTimeStampToTime(dbModel.lastUpdate),
         highDay = dbModel.highDay,
         lowDay = dbModel.lowDay,
         lastMarket = dbModel.lastMarket,
         imageUrl = dbModel.imageUrl
     )
+
+    companion object {
+
+        const val BASE_IMAGE_URL = "https://cryptocompare.com"
+    }
 }

@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.cryptoapp.R
 import com.squareup.picasso.Picasso
@@ -28,7 +27,7 @@ class CoinDetailActivity : AppCompatActivity() {
             ViewModelProvider.AndroidViewModelFactory(application)
         )[CoinViewModel::class.java]
         fromSymbol?.let {
-            viewModel.getDetailInfo(it).observe(this, Observer {
+            viewModel.getDetailInfo(it).observe(this) {
                 val ivLogoCoin: ImageView = findViewById(R.id.ivLogoCoin);
                 val tvFromSym: TextView = findViewById(R.id.tvFromSym);
                 val tvToSym: TextView = findViewById(R.id.tvToSym);
@@ -43,9 +42,9 @@ class CoinDetailActivity : AppCompatActivity() {
                 tvMinDayValue.text = it.lowDay.toString()
                 tvMaxDayValue.text = it.highDay.toString()
                 tvLastTraidValue.text = it.lastMarket
-                tvUpdatedValue.text = it.getFormattedTime()
-                Picasso.get().load(it.getFullImageUrl()).into(ivLogoCoin)
-            })
+                tvUpdatedValue.text = it.lastUpdate
+                Picasso.get().load(it.imageUrl).into(ivLogoCoin)
+            }
         }
     }
 

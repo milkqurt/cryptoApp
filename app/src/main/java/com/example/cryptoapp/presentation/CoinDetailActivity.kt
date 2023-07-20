@@ -4,13 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
+import com.example.cryptoapp.R
 import com.example.cryptoapp.databinding.ActivityCoinDetailBinding
-import com.squareup.picasso.Picasso
 
 class CoinDetailActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: CoinViewModel
 
     private val binding by lazy {
         ActivityCoinDetailBinding.inflate(layoutInflater)
@@ -24,23 +22,10 @@ class CoinDetailActivity : AppCompatActivity() {
             return
         }
         val fromSymbol = intent.getStringExtra(EXTRA_FROM_SYMBOL)
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory(application)
-        )[CoinViewModel::class.java]
-        fromSymbol?.let {
-            viewModel.getDetailInfo(it).observe(this) {
-                with(binding) {
-                    tvFromSym.text = it.fromSymbol
-                    tvToSym.text = it.toSymbol
-                    tvPriceValue.text = it.price.toString()
-                    tvMinDayValue.text = it.lowDay.toString()
-                    tvMaxDayValue.text = it.highDay.toString()
-                    tvLastTraidValue.text = it.lastMarket
-                    tvUpdatedValue.text = it.lastUpdate
-                    Picasso.get().load(it.imageUrl).into(ivLogoCoin)
-                }
-            }
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragment_container, CoinDetailFragment.detailInstance(fromSymbol))
+                .commit()
         }
     }
 

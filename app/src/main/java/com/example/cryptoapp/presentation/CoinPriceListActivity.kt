@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.example.cryptoapp.R
 import com.example.cryptoapp.databinding.ActivityCoinPriceListBinding
 import com.example.cryptoapp.domain.CoinInfo
 import com.example.cryptoapp.presentation.adapters.CoinInfoAdapter
@@ -22,11 +23,11 @@ class CoinPriceListActivity : AppCompatActivity() {
         val adapter = CoinInfoAdapter(this)
         adapter.onCoinClickListener = object : CoinInfoAdapter.OnCoinClickListener {
             override fun onClickCoin(coinPriceInfo: CoinInfo) {
-                val intent = CoinDetailActivity.detailIntent(
-                    this@CoinPriceListActivity,
-                    fromSymbol = coinPriceInfo.fromSymbol
-                )
-                startActivity(intent)
+                if (binding.fragmentContainer == null) {
+                    launchDetailActivity(coinPriceInfo.fromSymbol)
+                } else {
+                    launchDetailFragment(coinPriceInfo.fromSymbol)
+                }
             }
         }
         rvCoinPriceList = binding.rvCoinPriceList
@@ -38,5 +39,20 @@ class CoinPriceListActivity : AppCompatActivity() {
         viewModel.coinInfoList.observe(this) {
             adapter.submitList(it)
         }
+    }
+
+    private fun launchDetailActivity(fromSymbol: String) {
+        val intent = CoinDetailActivity.detailIntent(
+            this@CoinPriceListActivity,
+            fromSymbol = fromSymbol
+        )
+        startActivity(intent)
+    }
+
+    private fun launchDetailFragment(fromSymbol: String) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, CoinDetailFragment.detailInstance(fromSymbol))
+            .addToBackStack(null)
+            .commit()
     }
 }
